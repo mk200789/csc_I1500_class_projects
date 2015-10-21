@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Dobutsu Shogi</title>
+		<link rel="stylesheet" type="text/css" href="static/css/style.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+		<script type="text/javascript" src="static/script/game.js"></script>
+	</head>
+	<body>
+		<h1 class="title">Dobutsu Shogi</h1>
+		<p class="result" id="result"></p>
+		<div class="board">
+			<table id="table">
+				<tr>
+					<td id="box_1"></td>
+					<td id="box_2"></td>
+					<td id="box_3"></td>
+				</tr>
+				<tr>
+					<td id="box_4"></td>
+					<td id="box_5"></td>
+					<td id="box_6"></td>
+				</tr>
+				<tr>
+					<td id="box_7"></td>
+					<td id="box_8"></td>
+					<td id="box_9"></td>
+				</tr>
+				<tr>
+					<td id="box_10"></td>
+					<td id="box_11"></td>
+					<td id="box_12"></td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="button">
+			<button onclick="reset()">RESET/PLAY</button>
+		</div>
+	</body>
+</html>
