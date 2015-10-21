@@ -1,0 +1,57 @@
+body{
+	margin: 50px;
+	font-size: 30px;
+	text-decoration: bold;
+}
+
+.title {
+	text-align: center;
+}
+
+
+td{
+    border-radius: 10px;
+    /*-moz-border-radius: 20px;*/
+	width: 150px;
+	height: 150px;
+	border: 2px solid black;
+	text-align: center;
+	font-family: "Arial Black", Gadget, sans-serif;
+}
+
+.button{
+	margin-top: 50px;
+	text-align: center;
+}
+
+.play{
+	text-align: center;
+}
+
+a{
+	color: green;
+	font-family: "Arial Black", Gadget, sans-serif;
+}
+
+.result{
+	text-align: center;
+}
+
+button {
+	width: 100px;
+	height: 40px;
+	border: 0;
+	border-radius: 2px;
+	background-color: #FFCCCC;
+}
+
+/*button:focus {outline:0;}*/
+
+table{
+	background-color: yellow;
+	margin-left: auto;
+	margin-right: auto;
+	border-collapse: separate;
+	border-radius: 10px;
+	border-spacing: 1px;
+}
