@@ -4,19 +4,19 @@ var $possible_moves; //Holds the possible moves
 
 $(document).ready(function(){
 	//When everything is ready place the pieces on board.
-	$('#box_1').append($('<img />').attr('src', 'static/img/enemy_giraffe.png').attr('alt', 'enemy_giraffe'));
-	$('#box_2').append($('<img />').attr('src', 'static/img/enemy_lion.png').attr('alt', 'enemy_lion'));
-	$('#box_3').append($('<img />').attr('src', 'static/img/enemy_elephant.png').attr('alt', 'enemy_elephant'));
-	$('#box_5').append($('<img />').attr('src', 'static/img/enemy_chick.png').attr('alt', 'enemy_chick'));
+	$('#1').append($('<img />').attr('src', 'static/img/enemy_giraffe.png').attr('alt', 'enemy_giraffe'));
+	$('#2').append($('<img />').attr('src', 'static/img/enemy_lion.png').attr('alt', 'enemy_lion'));
+	$('#3').append($('<img />').attr('src', 'static/img/enemy_elephant.png').attr('alt', 'enemy_elephant'));
+	$('#5').append($('<img />').attr('src', 'static/img/enemy_chick.png').attr('alt', 'enemy_chick'));
 
-	$('#box_10').append($('<img />').attr('src', 'static/img/my_giraffe.png').attr('alt', 'my_giraffe'));
-	$('#box_11').append($('<img />').attr('src', 'static/img/my_lion.png').attr('alt', 'my_lion'));
-	$('#box_12').append($('<img />').attr('src', 'static/img/my_elephant.png').attr('alt', 'my_elephant'));
-	$('#box_8').append($('<img />').attr('src', 'static/img/my_chick.png').attr('alt', 'my_chick'));
+	$('#10').append($('<img />').attr('src', 'static/img/my_giraffe.png').attr('alt', 'my_giraffe'));
+	$('#11').append($('<img />').attr('src', 'static/img/my_lion.png').attr('alt', 'my_lion'));
+	$('#12').append($('<img />').attr('src', 'static/img/my_elephant.png').attr('alt', 'my_elephant'));
+	$('#8').append($('<img />').attr('src', 'static/img/my_chick.png').attr('alt', 'my_chick'));
 
 	turn = 0;
 	$('#table').find('td').on('click', function(){
-		console.log(turn);
+		//console.log(turn);
 		
 		if (turn%2 == 0){
 			//Handles the first move: selecting your piece
@@ -71,21 +71,46 @@ function get_possible_moves(current){
 	}
 };
 
+function display(piece, current){
+	/*
+		Display moves to output.
+	*/
+	
+	var message, who;
+	if ($(piece).children('img').attr('alt').match(/^my_([a-z]*)$/)){
+		who = "Player";
+	}
+	else{
+		who = "Opponent";
+	}
+
+	if (current.children('img').attr('alt')){
+		//message = $(piece).children('img').attr('alt') + " has moved from Cell " + piece[0].id + " to  Cell " + current[0].id + " and captured " + current.children('img').attr('alt');
+		message = who + " has moved from Cell " + piece[0].id + " to  Cell " + current[0].id + " and captured " + current.children('img').attr('alt');
+	}
+	else{
+		//message = $(piece).children('img').attr('alt') + " has moved from Cell " + piece[0].id + " to  Cell " + current[0].id;
+		message = who + " has moved from Cell " + piece[0].id + " to  Cell " + current[0].id;
+	}
+
+	document.getElementById('output').innerHTML = document.getElementById('output').innerHTML+message+"\n";
+};
+
 function reset(){
 	/*
 		Resets the board/game.
 	*/
 
 	$('td').text('');
-	$('#box_1').append($('<img />').attr('src', 'static/img/enemy_giraffe.png').attr('alt', 'giraffe'));
-	$('#box_2').append($('<img />').attr('src', 'static/img/enemy_lion.png').attr('alt', 'lion'));
-	$('#box_3').append($('<img />').attr('src', 'static/img/enemy_elephant.png').attr('alt', 'elephant'));
-	$('#box_5').append($('<img />').attr('src', 'static/img/enemy_chick.png').attr('alt', 'enemy_chick'));
+	$('#1').append($('<img />').attr('src', 'static/img/enemy_giraffe.png').attr('alt', 'giraffe'));
+	$('#2').append($('<img />').attr('src', 'static/img/enemy_lion.png').attr('alt', 'lion'));
+	$('#3').append($('<img />').attr('src', 'static/img/enemy_elephant.png').attr('alt', 'elephant'));
+	$('#5').append($('<img />').attr('src', 'static/img/enemy_chick.png').attr('alt', 'enemy_chick'));
 
-	$('#box_10').append($('<img />').attr('src', 'static/img/my_giraffe.png').attr('alt', 'giraffe'));
-	$('#box_11').append($('<img />').attr('src', 'static/img/my_lion.png').attr('alt', 'lion'));
-	$('#box_12').append($('<img />').attr('src', 'static/img/my_elephant.png').attr('alt', 'elephant'));
-	$('#box_8').append($('<img />').attr('src', 'static/img/my_chick.png').attr('alt', 'my_chick'));
+	$('#10').append($('<img />').attr('src', 'static/img/my_giraffe.png').attr('alt', 'giraffe'));
+	$('#11').append($('<img />').attr('src', 'static/img/my_lion.png').attr('alt', 'lion'));
+	$('#12').append($('<img />').attr('src', 'static/img/my_elephant.png').attr('alt', 'elephant'));
+	$('#8').append($('<img />').attr('src', 'static/img/my_chick.png').attr('alt', 'my_chick'));
 	
 	document.getElementById('result').innerHTML = "";
 };
@@ -108,11 +133,11 @@ function game(piece, current, location){
 
 					if ($(piece).children('img').attr('alt').match(/^my_([a-z]*)$/)){
 						//player is me
-						console.log('me');
-						console.log(current[0].id);
-						console.log(last_position);
+						//console.log('me');
+						//console.log(current[0].id);
+						//console.log(last_position);
 						if (player == undefined || player.match(/^enemy_([a-z]*)$/)){
-							console.log('got enemy');
+							//console.log('got enemy');
 							incorrect = false;
 							//turn++;
 						}
@@ -123,9 +148,9 @@ function game(piece, current, location){
 					}
 					else if ($(piece).children('img').attr('alt').match(/^enemy_([a-z]*)$/)){
 						//player is apponent
-						console.log('enemy');
+						//console.log('enemy');
 						if (player == undefined || player.match(/^my_([a-z]*)$/)){
-							console.log('got apponent');
+							//console.log('got apponent');
 							incorrect = false;
 							//turn++;
 						}
@@ -134,11 +159,14 @@ function game(piece, current, location){
 							break;
 						}
 					}
-					
+					display(piece, current);
 					document.getElementById(current[0].id).innerHTML = "";
 					$(current).append($(piece)[0].innerHTML);
 					document.getElementById(last_position).innerHTML = "";
 					incorrect = false;
+					
+					//document.getElementById('output').innerHTML = document.getElementById('output').innerHTML+"hello\n";
+
 					break;
 				}
 				else{

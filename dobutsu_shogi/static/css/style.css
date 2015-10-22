@@ -46,11 +46,30 @@ button {
 }
 
 /*button:focus {outline:0;}*/
+.board{
+	float: left;
+}
+
+.output{
+	float:right;
+}
+
+textarea{
+	min-height: 500px;
+	width: 300px;
+}
+
+.container{
+	padding: 5px;
+	min-height: 650px;
+}
+
+.reset{
+	text-align: center;
+}
 
 table{
 	background-color: yellow;
-	margin-left: auto;
-	margin-right: auto;
 	border-collapse: separate;
 	border-radius: 10px;
 	border-spacing: 1px;
