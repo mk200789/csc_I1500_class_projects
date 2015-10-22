@@ -1,6 +1,6 @@
 var turn, winner, piece;
 var last_position; //Save last position of the current piece
-var $possible_moves; //Holds the possible moves
+var $possible_moves =[]; //Holds the possible moves
 
 $(document).ready(function(){
 	//When everything is ready place the pieces on board.
@@ -14,12 +14,16 @@ $(document).ready(function(){
 	$('#12').append($('<img />').attr('src', 'static/img/my_elephant.png').attr('alt', 'my_elephant'));
 	$('#8').append($('<img />').attr('src', 'static/img/my_chick.png').attr('alt', 'my_chick'));
 
+	document.getElementById('output').innerHTML = "######### GAME START ########\n";
+
 	turn = 0;
+
 	$('#table').find('td').on('click', function(){
 		//console.log(turn);
 		
 		if (turn%2 == 0){
 			//Handles the first move: selecting your piece
+
 			document.getElementById('result').innerHTML = "";
 			piece = $(this);
 			last_position= $(this)[0].id;
@@ -39,7 +43,7 @@ function get_possible_moves(current){
 	/*
 		Obtain the possible moves for the current piece selected.
 	*/
-
+	
 	var index = $('#'+last_position).index(), $tr= $('#'+last_position).parent();
 	if (current.children('img').attr('alt') == 'enemy_elephant' || current.children('img').attr('alt') == 'my_elephant'){
 		$possible_moves = $tr.prev().find('td').eq(index+1);
@@ -69,6 +73,7 @@ function get_possible_moves(current){
 	else if(current.children('img').attr('alt') == 'my_chick'){
 		$possible_moves = $tr.prev().find('td').eq(index);
 	}
+	//console.log($possible_moves);
 };
 
 function display(piece, current){
@@ -102,17 +107,22 @@ function reset(){
 	*/
 
 	$('td').text('');
-	$('#1').append($('<img />').attr('src', 'static/img/enemy_giraffe.png').attr('alt', 'giraffe'));
-	$('#2').append($('<img />').attr('src', 'static/img/enemy_lion.png').attr('alt', 'lion'));
-	$('#3').append($('<img />').attr('src', 'static/img/enemy_elephant.png').attr('alt', 'elephant'));
+	$('#1').append($('<img />').attr('src', 'static/img/enemy_giraffe.png').attr('alt', 'enemy_giraffe'));
+	$('#2').append($('<img />').attr('src', 'static/img/enemy_lion.png').attr('alt', 'enemy_lion'));
+	$('#3').append($('<img />').attr('src', 'static/img/enemy_elephant.png').attr('alt', 'enemy_elephant'));
 	$('#5').append($('<img />').attr('src', 'static/img/enemy_chick.png').attr('alt', 'enemy_chick'));
 
-	$('#10').append($('<img />').attr('src', 'static/img/my_giraffe.png').attr('alt', 'giraffe'));
-	$('#11').append($('<img />').attr('src', 'static/img/my_lion.png').attr('alt', 'lion'));
-	$('#12').append($('<img />').attr('src', 'static/img/my_elephant.png').attr('alt', 'elephant'));
+	$('#10').append($('<img />').attr('src', 'static/img/my_giraffe.png').attr('alt', 'my_giraffe'));
+	$('#11').append($('<img />').attr('src', 'static/img/my_lion.png').attr('alt', 'my_lion'));
+	$('#12').append($('<img />').attr('src', 'static/img/my_elephant.png').attr('alt', 'my_elephant'));
 	$('#8').append($('<img />').attr('src', 'static/img/my_chick.png').attr('alt', 'my_chick'));
 	
 	document.getElementById('result').innerHTML = "";
+	document.getElementById('output').innerHTML = "";
+	document.getElementById('output').innerHTML = "######### GAME START ########\n";
+	turn = 0;
+	$possible_moves = [];
+	piece = [];
 };
 
 function game(piece, current, location){
@@ -164,8 +174,6 @@ function game(piece, current, location){
 					$(current).append($(piece)[0].innerHTML);
 					document.getElementById(last_position).innerHTML = "";
 					incorrect = false;
-					
-					//document.getElementById('output').innerHTML = document.getElementById('output').innerHTML+"hello\n";
 
 					break;
 				}
@@ -177,7 +185,7 @@ function game(piece, current, location){
 			if (incorrect){ 
 				document.getElementById('result').innerHTML = "Wrong move"; 
 			}
-			$possible_moves = "";
+			$possible_moves = [];
 		}
 		else{
 			//Origin: setting up possible moves

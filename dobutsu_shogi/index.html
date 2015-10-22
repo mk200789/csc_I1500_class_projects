@@ -9,33 +9,41 @@
 	</head>
 	<body>
 		<h1 class="title">Dobutsu Shogi</h1>
-		<p class="result" id="result"></p>
-		<div class="board">
-			<table id="table">
-				<tr>
-					<td id="box_1"></td>
-					<td id="box_2"></td>
-					<td id="box_3"></td>
-				</tr>
-				<tr>
-					<td id="box_4"></td>
-					<td id="box_5"></td>
-					<td id="box_6"></td>
-				</tr>
-				<tr>
-					<td id="box_7"></td>
-					<td id="box_8"></td>
-					<td id="box_9"></td>
-				</tr>
-				<tr>
-					<td id="box_10"></td>
-					<td id="box_11"></td>
-					<td id="box_12"></td>
-				</tr>
-			</table>
+		<div class="display">
+			<p class="result" id="result"></p>
+		</div>
+		<div class="container">
+			<div class="board">
+				<table id="table">
+					<tr>
+						<td id="1"></td>
+						<td id="2"></td>
+						<td id="3"></td>
+					</tr>
+					<tr>
+						<td id="4"></td>
+						<td id="5"></td>
+						<td id="6"></td>
+					</tr>
+					<tr>
+						<td id="7"></td>
+						<td id="8"></td>
+						<td id="9"></td>
+					</tr>
+					<tr>
+						<td id="10"></td>
+						<td id="11"></td>
+						<td id="12"></td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="output">
+				<textarea id="output"></textarea>
+			</div>
 		</div>
 
-		<div class="button">
+		<div class="reset">
 			<button onclick="reset()">RESET/PLAY</button>
 		</div>
 	</body>
