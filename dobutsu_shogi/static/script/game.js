@@ -1,6 +1,9 @@
 var turn, winner, piece;
 var last_position; //Save last position of the current piece
 var $possible_moves =[]; //Holds the possible moves
+var player = true;
+var incorrect = false; //checks if the current piece has right move
+var valid_piece = true; //check if the current piece is valid;
 
 $(document).ready(function(){
 	//When everything is ready place the pieces on board.
@@ -19,11 +22,10 @@ $(document).ready(function(){
 	turn = 0;
 
 	$('#table').find('td').on('click', function(){
-		//console.log(turn);
-		
+		console.log(turn);
+		console.log(player);
 		if (turn%2 == 0){
 			//Handles the first move: selecting your piece
-
 			document.getElementById('result').innerHTML = "";
 			piece = $(this);
 			last_position= $(this)[0].id;
@@ -32,8 +34,14 @@ $(document).ready(function(){
 		else if (turn%2 == 1){
 			//Handles the second move: Destination
 			game(piece, $(this), 1);
+			//console.log(incorrect);
+			if (!incorrect && valid_piece){
+				//if the second move is incorrect the turn the current player is still at turm
+				player = !player;
+			}
 		}
-		turn++;
+		//turn++;
+		//console.log(turn);
 
 	});
 });
@@ -45,44 +53,82 @@ function get_possible_moves(current){
 	*/
 	
 	var index = $('#'+last_position).index(), $tr= $('#'+last_position).parent();
-	if (current.children('img').attr('alt') == 'enemy_elephant' || current.children('img').attr('alt') == 'my_elephant'){
-		$possible_moves = $tr.prev().find('td').eq(index+1);
-		$possible_moves = $possible_moves.add($tr.next().find('td').eq(index+1));
-		$possible_moves = $possible_moves.add($tr.prev().find('td').eq(index-1)); //find the td with the same index-1 in prev row
-		$possible_moves = $possible_moves.add($tr.next().find('td').eq(index-1)); //find the td with the same index-1 in next row
+	if (player){
+		//player
+		if (current.children('img').attr('alt') == 'my_elephant'){
+			$possible_moves = $tr.prev().find('td').eq(index+1);
+			$possible_moves = $possible_moves.add($tr.next().find('td').eq(index+1));
+			$possible_moves = $possible_moves.add($tr.prev().find('td').eq(index-1)); //find the td with the same index-1 in prev row
+			$possible_moves = $possible_moves.add($tr.next().find('td').eq(index-1)); //find the td with the same index-1 in next row
+		}
+		else if (current.children('img').attr('alt') == 'my_lion'){
+			$possible_moves = $('#'+last_position).prev();
+			$possible_moves = $possible_moves.add($('#'+last_position).next());
+			$possible_moves = $possible_moves.add($tr.prev().find('td').eq(index));
+			$possible_moves = $possible_moves.add($tr.next().find('td').eq(index));
+			$possible_moves = $possible_moves.add($tr.prev().find('td').eq(index+1));
+			$possible_moves = $possible_moves.add($tr.next().find('td').eq(index+1));
+			$possible_moves = $possible_moves.add($tr.prev().find('td').eq(index-1));
+			$possible_moves = $possible_moves.add($tr.next().find('td').eq(index-1));
+		}
+		else if (current.children('img').attr('alt') == 'my_giraffe'){
+			$possible_moves = $('#'+last_position).prev();
+			$possible_moves = $possible_moves.add($('#'+last_position).next());
+			$possible_moves = $possible_moves.add($tr.prev().find('td').eq(index));
+			$possible_moves = $possible_moves.add($tr.next().find('td').eq(index));
+		}
+		else if(current.children('img').attr('alt') == 'my_chick'){
+			$possible_moves = $tr.prev().find('td').eq(index);
+		}
+		else{
+			//console.log('invalid piece');
+			valid_piece = false;
+		}
 	}
-	else if (current.children('img').attr('alt') == 'enemy_lion' || current.children('img').attr('alt') == 'my_lion'){
-		$possible_moves = $('#'+last_position).prev();
-		$possible_moves = $possible_moves.add($('#'+last_position).next());
-		$possible_moves = $possible_moves.add($tr.prev().find('td').eq(index));
-		$possible_moves = $possible_moves.add($tr.next().find('td').eq(index));
-		$possible_moves = $possible_moves.add($tr.prev().find('td').eq(index+1));
-		$possible_moves = $possible_moves.add($tr.next().find('td').eq(index+1));
-		$possible_moves = $possible_moves.add($tr.prev().find('td').eq(index-1));
-		$possible_moves = $possible_moves.add($tr.next().find('td').eq(index-1));
+	else{
+		//opponent
+		if (current.children('img').attr('alt') == 'enemy_elephant'){
+			$possible_moves = $tr.prev().find('td').eq(index+1);
+			$possible_moves = $possible_moves.add($tr.next().find('td').eq(index+1));
+			$possible_moves = $possible_moves.add($tr.prev().find('td').eq(index-1)); //find the td with the same index-1 in prev row
+			$possible_moves = $possible_moves.add($tr.next().find('td').eq(index-1)); //find the td with the same index-1 in next row
+		}
+		else if (current.children('img').attr('alt') == 'enemy_lion'){
+			$possible_moves = $('#'+last_position).prev();
+			$possible_moves = $possible_moves.add($('#'+last_position).next());
+			$possible_moves = $possible_moves.add($tr.prev().find('td').eq(index));
+			$possible_moves = $possible_moves.add($tr.next().find('td').eq(index));
+			$possible_moves = $possible_moves.add($tr.prev().find('td').eq(index+1));
+			$possible_moves = $possible_moves.add($tr.next().find('td').eq(index+1));
+			$possible_moves = $possible_moves.add($tr.prev().find('td').eq(index-1));
+			$possible_moves = $possible_moves.add($tr.next().find('td').eq(index-1));
+		}
+		else if (current.children('img').attr('alt') == 'enemy_giraffe'){
+			$possible_moves = $('#'+last_position).prev();
+			$possible_moves = $possible_moves.add($('#'+last_position).next());
+			$possible_moves = $possible_moves.add($tr.prev().find('td').eq(index));
+			$possible_moves = $possible_moves.add($tr.next().find('td').eq(index));
+		}
+		else if (current.children('img').attr('alt') == 'enemy_chick'){
+			$possible_moves = $tr.next().find('td').eq(index);
+		}
+		else{
+			//console.log('invalid piece');
+			valid_piece = false;
+		}	
 	}
-	else if (current.children('img').attr('alt') == 'enemy_giraffe' || current.children('img').attr('alt') == 'my_giraffe'){
-		$possible_moves = $('#'+last_position).prev();
-		$possible_moves = $possible_moves.add($('#'+last_position).next());
-		$possible_moves = $possible_moves.add($tr.prev().find('td').eq(index));
-		$possible_moves = $possible_moves.add($tr.next().find('td').eq(index));
-	}
-	else if (current.children('img').attr('alt') == 'enemy_chick'){
-		$possible_moves = $tr.next().find('td').eq(index);
-	}
-	else if(current.children('img').attr('alt') == 'my_chick'){
-		$possible_moves = $tr.prev().find('td').eq(index);
-	}
-	//console.log($possible_moves);
 };
 
-function display(piece, current){
+
+function display(current){
 	/*
 		Display moves to output.
 	*/
 	
 	var message, who;
-	if ($(piece).children('img').attr('alt').match(/^my_([a-z]*)$/)){
+	var test;
+
+	if (player){
 		who = "Player";
 	}
 	else{
@@ -123,6 +169,8 @@ function reset(){
 	turn = 0;
 	$possible_moves = [];
 	piece = [];
+	player = true;
+	valid_piece = true;
 };
 
 function game(piece, current, location){
@@ -130,67 +178,81 @@ function game(piece, current, location){
 		Perform the game logistics.
 	*/
 
+	//console.log(player);
+
 	if ($(piece)[0].innerHTML){
 		if (location){
 			//Destination
-			var incorrect = false;
-			//console.log($possible_moves.get());
+			if (valid_piece){
+				//if piece selected is valid
+				for (var i=0; i< $possible_moves.get().length; i++){
+					
+					if (current[0].id == $possible_moves.get()[i].id){
+						var user = current.children('img').attr('alt');
 
-			for (var i=0; i< $possible_moves.get().length; i++){
-				
-				if (current[0].id == $possible_moves.get()[i].id){
-					var player = current.children('img').attr('alt');
+						if ($(piece).children('img').attr('alt').match(/^my_([a-z]*)$/)){
+							//player is me
+							if (user == undefined || user.match(/^enemy_([a-z]*)$/)){
+								incorrect = false;
+								//turn++;
+							}
+							else{
+								incorrect = true;
+								break;
+							}
+						}
+						else if ($(piece).children('img').attr('alt').match(/^enemy_([a-z]*)$/)){
+							//player is apponent
+							if (user == undefined || user.match(/^my_([a-z]*)$/)){
+								incorrect = false;
+								//turn++;
+							}
+							else{
+								incorrect = true;
+								break;
+							}
+						}
+						
+						display(current);
+						document.getElementById(current[0].id).innerHTML = "";
+						$(current).append($(piece)[0].innerHTML);
+						document.getElementById(last_position).innerHTML = "";
+						incorrect = false;
 
-					if ($(piece).children('img').attr('alt').match(/^my_([a-z]*)$/)){
-						//player is me
-						//console.log('me');
-						//console.log(current[0].id);
-						//console.log(last_position);
-						if (player == undefined || player.match(/^enemy_([a-z]*)$/)){
-							//console.log('got enemy');
-							incorrect = false;
-							//turn++;
-						}
-						else{
-							incorrect = true;
-							break;
-						}
+						break;
 					}
-					else if ($(piece).children('img').attr('alt').match(/^enemy_([a-z]*)$/)){
-						//player is apponent
-						//console.log('enemy');
-						if (player == undefined || player.match(/^my_([a-z]*)$/)){
-							//console.log('got apponent');
-							incorrect = false;
-							//turn++;
-						}
-						else{
-							incorrect = true;
-							break;
-						}
+					else{
+						incorrect = true;
 					}
-					display(piece, current);
-					document.getElementById(current[0].id).innerHTML = "";
-					$(current).append($(piece)[0].innerHTML);
-					document.getElementById(last_position).innerHTML = "";
-					incorrect = false;
+				}
+			}
+			else{
+				//if the piece is invalid
+				document.getElementById('result').innerHTML = "Choose a valid piece";
+				turn -= 1;
 
-					break;
-				}
-				else{
-					incorrect = true;
-				}
 			}
 
 			if (incorrect){ 
-				document.getElementById('result').innerHTML = "Wrong move"; 
+				document.getElementById('result').innerHTML = "Wrong movement";
+				turn -= 2;
 			}
-			$possible_moves = [];
+			else{
+				$possible_moves = [];
+			}
+			
 		}
 		else{
-			//Origin: setting up possible moves
+			/*
+			Origin: setting up possible moves
+			*/
 			get_possible_moves(current);
+			if (!valid_piece){
+				document.getElementById('result').innerHTML = "Invalid piece. Please select your own piece.";
+				turn -= 1;
+				valid_piece = true;
+			}
 		}
-
+		turn++;
 	}
 };
