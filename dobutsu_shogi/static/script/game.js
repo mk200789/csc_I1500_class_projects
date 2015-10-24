@@ -1,4 +1,5 @@
-var turn, winner, piece;
+var turn, piece;
+var winner = false;
 var last_position; //Save last position of the current piece
 var $possible_moves =[]; //Holds the possible moves
 var player = true;
@@ -24,21 +25,27 @@ $(document).ready(function(){
 	$('#table').find('td').on('click', function(){
 		console.log(turn);
 		console.log(player);
-		if (turn%2 == 0){
-			//Handles the first move: selecting your piece
-			document.getElementById('result').innerHTML = "";
-			piece = $(this);
-			last_position= $(this)[0].id;
-			game(piece, $(this), 0);
-		}
-		else if (turn%2 == 1){
-			//Handles the second move: Destination
-			game(piece, $(this), 1);
-			//console.log(incorrect);
-			if (!incorrect && valid_piece){
-				//if the second move is incorrect the turn the current player is still at turm
-				player = !player;
+		if (!winner){
+			//if there's no winner yet the game continues
+			if (turn%2 == 0){
+				//Handles the first move: selecting your piece
+				document.getElementById('result').innerHTML = "";
+				piece = $(this);
+				last_position= $(this)[0].id;
+				game(piece, $(this), 0);
 			}
+			else if (turn%2 == 1){
+				//Handles the second move: Destination
+				game(piece, $(this), 1);
+				//console.log(incorrect);
+				if (!incorrect && valid_piece){
+					//if the second move is incorrect the turn the current player is still at turm
+					player = !player;
+				}
+			}
+		}
+		else{
+			document.getElementById('output').innerHTML = document.getElementById('output').innerHTML+ "Game over. Click reset to play game again.\n";
 		}
 		//turn++;
 		//console.log(turn);
@@ -171,6 +178,27 @@ function reset(){
 	piece = [];
 	player = true;
 	valid_piece = true;
+	winner = false;
+};
+
+function check_win(user){
+	/*
+		Checks if there's any winner.
+		If there's a winner, winner will be displayed in output textarea, and set winner to true
+		to stop further plays until game is reset.
+	*/
+	
+	if (user){
+		if (user.match(/lion$/)){
+			if (player){
+				document.getElementById('output').innerHTML = document.getElementById('output').innerHTML + "Player wins!\n";
+			}
+			else{
+				document.getElementById('output').innerHTML = document.getElementById('output').innerHTML + "Opponent wins!\n";
+			}
+			winner = true;
+		}
+	}
 };
 
 function game(piece, current, location){
@@ -238,6 +266,7 @@ function game(piece, current, location){
 				turn -= 2;
 			}
 			else{
+				check_win(user);
 				$possible_moves = [];
 			}
 			
