@@ -181,11 +181,15 @@ function reset(){
 	winner = false;
 };
 
-function checkWin(user){
-	console.log(user);
+function check_win(user){
+	/*
+		Checks if there's any winner.
+		If there's a winner, winner will be displayed in output textarea, and set winner to true
+		to stop further plays until game is reset.
+	*/
+	
 	if (user){
 		if (user.match(/lion$/)){
-			console.log('gotcha');
 			if (player){
 				document.getElementById('output').innerHTML = document.getElementById('output').innerHTML + "Player wins!\n";
 			}
@@ -262,7 +266,7 @@ function game(piece, current, location){
 				turn -= 2;
 			}
 			else{
-				checkWin(user);
+				check_win(user);
 				$possible_moves = [];
 			}
 			
