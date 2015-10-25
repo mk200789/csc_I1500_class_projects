@@ -8,15 +8,15 @@ var valid_piece = true; //check if the current piece is valid;
 
 $(document).ready(function(){
 	//When everything is ready place the pieces on board.
-	$('#1').append($('<img />').attr('src', 'static/img/enemy_giraffe.png').attr('alt', 'enemy_giraffe'));
-	$('#2').append($('<img />').attr('src', 'static/img/enemy_lion.png').attr('alt', 'enemy_lion'));
-	$('#3').append($('<img />').attr('src', 'static/img/enemy_elephant.png').attr('alt', 'enemy_elephant'));
-	$('#5').append($('<img />').attr('src', 'static/img/enemy_chick.png').attr('alt', 'enemy_chick'));
+	$('#1').append($('<img />').attr('src', 'static/img/enemy_giraffe.png').attr('alt', 'enemy_giraffe').attr('class', 'enemy_giraffe'));
+	$('#2').append($('<img />').attr('src', 'static/img/enemy_lion.png').attr('alt', 'enemy_lion').attr('class', 'enemy_lion'));
+	$('#3').append($('<img />').attr('src', 'static/img/enemy_elephant.png').attr('alt', 'enemy_elephant').attr('class', 'enemy_elephant'));
+	$('#5').append($('<img />').attr('src', 'static/img/enemy_chick.png').attr('alt', 'enemy_chick').attr('class', 'enemy_chick'));
 
-	$('#10').append($('<img />').attr('src', 'static/img/my_giraffe.png').attr('alt', 'my_giraffe'));
-	$('#11').append($('<img />').attr('src', 'static/img/my_lion.png').attr('alt', 'my_lion'));
-	$('#12').append($('<img />').attr('src', 'static/img/my_elephant.png').attr('alt', 'my_elephant'));
-	$('#8').append($('<img />').attr('src', 'static/img/my_chick.png').attr('alt', 'my_chick'));
+	$('#10').append($('<img />').attr('src', 'static/img/my_giraffe.png').attr('alt', 'my_giraffe').attr('class', 'my_giraffe'));
+	$('#11').append($('<img />').attr('src', 'static/img/my_lion.png').attr('alt', 'my_lion').attr('class', 'my_lion'));
+	$('#12').append($('<img />').attr('src', 'static/img/my_elephant.png').attr('alt', 'my_elephant').attr('class', 'my_elephant'));
+	$('#8').append($('<img />').attr('src', 'static/img/my_chick.png').attr('alt', 'my_chick').attr('class', 'my_chick'));
 
 	document.getElementById('output').innerHTML = "######### GAME START ########\n";
 
@@ -137,9 +137,11 @@ function display(current){
 
 	if (player){
 		who = "Player";
+		document.getElementById('player').innerHTML = document.getElementById('player').innerHTML + current[0].innerHTML;
 	}
 	else{
 		who = "Opponent";
+		document.getElementById('opponent').innerHTML = document.getElementById('opponent').innerHTML + current[0].innerHTML;
 	}
 
 	if (current.children('img').attr('alt')){
@@ -151,7 +153,8 @@ function display(current){
 		message = who + " has moved from Cell " + piece[0].id + " to  Cell " + current[0].id;
 	}
 
-	document.getElementById('output').innerHTML = document.getElementById('output').innerHTML+message+"\n";
+	document.getElementById('output').innerHTML = document.getElementById('output').innerHTML+message;
+
 };
 
 function reset(){
@@ -160,19 +163,21 @@ function reset(){
 	*/
 
 	$('td').text('');
-	$('#1').append($('<img />').attr('src', 'static/img/enemy_giraffe.png').attr('alt', 'enemy_giraffe'));
-	$('#2').append($('<img />').attr('src', 'static/img/enemy_lion.png').attr('alt', 'enemy_lion'));
-	$('#3').append($('<img />').attr('src', 'static/img/enemy_elephant.png').attr('alt', 'enemy_elephant'));
-	$('#5').append($('<img />').attr('src', 'static/img/enemy_chick.png').attr('alt', 'enemy_chick'));
+	$('#1').append($('<img />').attr('src', 'static/img/enemy_giraffe.png').attr('alt', 'enemy_giraffe').attr('class', 'enemy_giraffe'));
+	$('#2').append($('<img />').attr('src', 'static/img/enemy_lion.png').attr('alt', 'enemy_lion').attr('class', 'enemy_lion'));
+	$('#3').append($('<img />').attr('src', 'static/img/enemy_elephant.png').attr('alt', 'enemy_elephant').attr('class', 'enemy_elephant'));
+	$('#5').append($('<img />').attr('src', 'static/img/enemy_chick.png').attr('alt', 'enemy_chick').attr('class', 'enemy_chick'));
 
-	$('#10').append($('<img />').attr('src', 'static/img/my_giraffe.png').attr('alt', 'my_giraffe'));
-	$('#11').append($('<img />').attr('src', 'static/img/my_lion.png').attr('alt', 'my_lion'));
-	$('#12').append($('<img />').attr('src', 'static/img/my_elephant.png').attr('alt', 'my_elephant'));
-	$('#8').append($('<img />').attr('src', 'static/img/my_chick.png').attr('alt', 'my_chick'));
+	$('#10').append($('<img />').attr('src', 'static/img/my_giraffe.png').attr('alt', 'my_giraffe').attr('class', 'my_giraffe'));
+	$('#11').append($('<img />').attr('src', 'static/img/my_lion.png').attr('alt', 'my_lion').attr('class', 'my_lion'));
+	$('#12').append($('<img />').attr('src', 'static/img/my_elephant.png').attr('alt', 'my_elephant').attr('class', 'my_elephant'));
+	$('#8').append($('<img />').attr('src', 'static/img/my_chick.png').attr('alt', 'my_chick').attr('class', 'my_chick'));
 	
 	document.getElementById('result').innerHTML = "";
 	document.getElementById('output').innerHTML = "";
 	document.getElementById('output').innerHTML = "######### GAME START ########\n";
+	document.getElementById('opponent').innerHTML = "";
+	document.getElementById('player').innerHTML="";
 	turn = 0;
 	$possible_moves = [];
 	piece = [];
@@ -181,13 +186,17 @@ function reset(){
 	winner = false;
 };
 
-function check_win(user){
+function check_win(user, current){
 	/*
 		Checks if there's any winner.
 		If there's a winner, winner will be displayed in output textarea, and set winner to true
 		to stop further plays until game is reset.
+
+		Two ways of winning:
+			1. Capturing opponents/player's Lion.
+			2. Advancing one's ow Lion into the farthest zone.
 	*/
-	
+
 	if (user){
 		if (user.match(/lion$/)){
 			if (player){
@@ -199,6 +208,46 @@ function check_win(user){
 			winner = true;
 		}
 	}
+	else if (current.children('img').attr('alt').match(/^my_lion$/)){
+		if (current.parent()[0].rowIndex == 0){
+			document.getElementById('output').innerHTML = document.getElementById('output').innerHTML + "Player wins!\n";
+			winner = true;
+		}
+	}
+	else if (current.children('img').attr('alt').match(/^enemy_lion/)){
+		if (current.parent()[0].rowIndex == 3){
+			document.getElementById('output').innerHTML = document.getElementById('output').innerHTML + "Opponent wins!\n";
+			winner = true;
+		}
+	}
+
+};
+
+function transition(piece, current){
+	/*
+		If chick has reached the opponents/player the last/first row respectively,
+		the chick will transition to a hen.
+	*/
+	var id = current[0].id;
+
+	if (piece.children('img').attr('alt').match(/^my_chick$/)){
+		if (current.parent()[0].rowIndex == 0)
+		{
+			console.log('change this chick to hen!');
+			document.getElementsByClassName('my_chick')[0].src ='static/img/my_hen.png';
+			document.getElementsByClassName('my_chick')[0].alt = 'my_hen';
+			document.getElementsByClassName('my_chick')[0].class = 'my_hen';
+		}
+	}
+	else if (piece.children('img').attr('alt').match(/^enemy_chick$/)){
+		if (current.parent()[0].rowIndex == 3)
+		{
+			console.log('change this chick to hen!');
+			document.getElementsByClassName('enemy_chick')[0].src ='static/img/enemy_hen.png';
+			document.getElementsByClassName('enemy_chick')[0].alt = 'enemy_hen';
+			document.getElementsByClassName('enemy_chick')[0].class = 'enemy_hen';
+		}
+	}
 };
 
 function game(piece, current, location){
@@ -208,7 +257,7 @@ function game(piece, current, location){
 
 	//console.log(player);
 
-	if ($(piece)[0].innerHTML){
+	if (piece[0].innerHTML){
 		if (location){
 			//Destination
 			if (valid_piece){
@@ -218,22 +267,24 @@ function game(piece, current, location){
 					if (current[0].id == $possible_moves.get()[i].id){
 						var user = current.children('img').attr('alt');
 
-						if ($(piece).children('img').attr('alt').match(/^my_([a-z]*)$/)){
+						if (piece.children('img').attr('alt').match(/^my_([a-z]*)$/)){
 							//player is me
 							if (user == undefined || user.match(/^enemy_([a-z]*)$/)){
 								incorrect = false;
 								//turn++;
+								transition(piece, current);
 							}
 							else{
 								incorrect = true;
 								break;
 							}
 						}
-						else if ($(piece).children('img').attr('alt').match(/^enemy_([a-z]*)$/)){
+						else if (piece.children('img').attr('alt').match(/^enemy_([a-z]*)$/)){
 							//player is apponent
 							if (user == undefined || user.match(/^my_([a-z]*)$/)){
 								incorrect = false;
 								//turn++;
+								transition(piece, current);
 							}
 							else{
 								incorrect = true;
@@ -243,7 +294,7 @@ function game(piece, current, location){
 						
 						display(current);
 						document.getElementById(current[0].id).innerHTML = "";
-						$(current).append($(piece)[0].innerHTML);
+						$(current).append(piece[0].innerHTML);
 						document.getElementById(last_position).innerHTML = "";
 						incorrect = false;
 
@@ -266,7 +317,7 @@ function game(piece, current, location){
 				turn -= 2;
 			}
 			else{
-				check_win(user);
+				check_win(user, current);
 				$possible_moves = [];
 			}
 			
