@@ -137,9 +137,11 @@ function display(current){
 
 	if (player){
 		who = "Player";
+		document.getElementById('player').innerHTML = document.getElementById('player').innerHTML + current[0].innerHTML;
 	}
 	else{
 		who = "Opponent";
+		document.getElementById('opponent').innerHTML = document.getElementById('opponent').innerHTML + current[0].innerHTML;
 	}
 
 	if (current.children('img').attr('alt')){
@@ -151,7 +153,8 @@ function display(current){
 		message = who + " has moved from Cell " + piece[0].id + " to  Cell " + current[0].id;
 	}
 
-	document.getElementById('output').innerHTML = document.getElementById('output').innerHTML+message+"\n";
+	document.getElementById('output').innerHTML = document.getElementById('output').innerHTML+message;
+
 };
 
 function reset(){
@@ -173,6 +176,8 @@ function reset(){
 	document.getElementById('result').innerHTML = "";
 	document.getElementById('output').innerHTML = "";
 	document.getElementById('output').innerHTML = "######### GAME START ########\n";
+	document.getElementById('opponent').innerHTML = "";
+	document.getElementById('player').innerHTML="";
 	turn = 0;
 	$possible_moves = [];
 	piece = [];
@@ -181,11 +186,15 @@ function reset(){
 	winner = false;
 };
 
-function check_win(user){
+function check_win(user, current){
 	/*
 		Checks if there's any winner.
 		If there's a winner, winner will be displayed in output textarea, and set winner to true
 		to stop further plays until game is reset.
+
+		Two ways of winning:
+			1. Capturing opponents/player's Lion.
+			2. Advancing one's ow Lion into the farthest zone.
 	*/
 
 	if (user){
@@ -199,6 +208,19 @@ function check_win(user){
 			winner = true;
 		}
 	}
+	else if (current.children('img').attr('alt').match(/^my_lion$/)){
+		if (current.parent()[0].rowIndex == 0){
+			document.getElementById('output').innerHTML = document.getElementById('output').innerHTML + "Player wins!\n";
+			winner = true;
+		}
+	}
+	else if (current.children('img').attr('alt').match(/^enemy_lion/)){
+		if (current.parent()[0].rowIndex == 3){
+			document.getElementById('output').innerHTML = document.getElementById('output').innerHTML + "Opponent wins!\n";
+			winner = true;
+		}
+	}
+
 };
 
 function transition(piece, current){
@@ -295,7 +317,7 @@ function game(piece, current, location){
 				turn -= 2;
 			}
 			else{
-				check_win(user);
+				check_win(user, current);
 				$possible_moves = [];
 			}
 			
