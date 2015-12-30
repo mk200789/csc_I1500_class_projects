@@ -8,10 +8,10 @@ body{
 	text-align: center;
 }
 
-td{
+.bench_cell{
     border-radius: 8px;
-    height: 150px;
-    width: 150px;
+    height: 100px;
+    width: 100px;
 	border: 2px solid black;
 	text-align: center;
 	font-family: "Arial Black", Gadget, sans-serif;
@@ -22,6 +22,12 @@ td{
 	margin: 0;
 	font-size: 0;
 	line-height: 0;
+    border-radius: 8px;
+    height: 150px;
+    width: 150px;
+	border: 2px solid black;
+	text-align: center;
+	font-family: "Arial Black", Gadget, sans-serif;
 }
 
 .button{
@@ -118,7 +124,7 @@ textarea{
 	text-align: center;
 }
 
-table{
+.table{
 	background-color: yellow;
 	border-collapse: separate;
 	border-radius: 10px;
