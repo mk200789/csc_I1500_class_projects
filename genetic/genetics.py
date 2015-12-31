@@ -7,16 +7,15 @@ from prettytable import PrettyTable
 import operator
 import copy
 
-
 def rng():
 	m = 10000
-	a = 3201
-	c = 1013904223
-	x = 0
+	a = 3201 #3
+	c = 1013904223 #2
+	x = 0 #5
 
 	distinct_list = []
 
-	for i in range(10):
+	for i in range(100):
 		x = (a*x +c)%m
 		#stores [100] 10 distinct positive integers in distinct_list
 		distinct_list.append(x)
@@ -26,10 +25,10 @@ def rng():
 def generate_strings(population):
 	# generates strings of equal # of 1's and 0's
 	strings = []
-	random.seed(0)
+	#random.seed(0)
 	for i in range(population):
 		#generate a population of strings with equal 1's and 0s
-		sample = [0 for x in range(5)] + [1 for x in range(5)]
+		sample = [0 for x in range(50)] + [1 for x in range(50)]
 		random.shuffle(sample)
 		strings.append(''.join(str(x) for x in sample))
 		#strings.append([])
@@ -38,7 +37,6 @@ def generate_strings(population):
 
 def partition(string, distinct_list):
 	#handles partition of list in two subset
-	#print "======================== partition() ========================"
 	sub_list1 = [] 
 	sub_list2 = []
 
@@ -53,58 +51,43 @@ def partition(string, distinct_list):
 
 	return sub_list1, sub_list2 
 
-
-def print_table(pop):
-	x = PrettyTable(["Sum Difference", "String" ,"Subset 1", "Subset 2"])
-	for i in pop:
-		x.add_row([i[0], i[3] ,i[1], i[2]])
-	print x
-	return
-
-def check_dup(indiv, pop):
+def check_dup(indiv, population):
 	#returns the amount of dups
 	dups = 0
-	for i in pop:
+	for i in population:
 		if i[3] == indiv:
 			dups += 1
 
 	return dups
 
-def fitness(pop):
+def fitness(population):
 	total_fitness, max_fitness, avg_fitness = 0, 0, 0.0
-	pop_with_fitness = []
+	population_with_fitness = []
 
-	for i in range(len(pop)):
-		pop_with_fitness.append([len(pop)-i-1, pop[i][0], pop[i][1], pop[i][2], pop[i][3]])
-		total_fitness += len(pop)-1-i
+	for i in range(len(population)):
+		population_with_fitness.append([len(population)-i-1, population[i][0], population[i][1], population[i][2], population[i][3]])
+		total_fitness += len(population)-1-i
 
-	max_fitness = len(pop)-1
-	avg_fitness = float(total_fitness) / len(pop)
+	max_fitness = len(population)-1
+	avg_fitness = float(total_fitness) / len(population)
 
-	for i in range(len(pop_with_fitness)):
+	for i in range(len(population_with_fitness)):
 		#the probability selection for each string
-		pop_with_fitness[i].append(float(pop_with_fitness[i][0])/total_fitness)
-		
-
-	x = PrettyTable(["String", "Subset 1", "Subset 2", "Sum Difference" ,"Fitness", "P(s)"])
-	for i in range(len(pop_with_fitness)):#-1, -1, -1):
-		x.add_row([pop_with_fitness[i][4], pop_with_fitness[i][2], pop_with_fitness[i][3], pop_with_fitness[i][1], pop_with_fitness[i][0], pop_with_fitness[i][5] ])
+		population_with_fitness[i].append(float(population_with_fitness[i][0])/total_fitness)
 	
-	print x
-	print "total_fitness: ", total_fitness , "\nmax_fitness: ", max_fitness, "\navg_fitness: ", avg_fitness
-	return total_fitness, max_fitness, avg_fitness, pop_with_fitness
+	return total_fitness, max_fitness, avg_fitness, population_with_fitness
 
 
-def roulette_wheel(pop_with_fitness):
-	#random.seed()
-	r = random.random()
+def roulette_wheel(population_with_fitness):
+	random.seed()
+	r = random.uniform(0.0, 1.0)
 	previous_prob = 0
 
 	match = 0
-	for i in range(len(pop_with_fitness)):
+	for i in range(len(population_with_fitness)):
 		if r <= previous_prob:
-			return pop_with_fitness[i]
-		previous_prob += pop_with_fitness[i][5]
+			return population_with_fitness[i]
+		previous_prob += population_with_fitness[i][5]
 
 
 def check_balanced_string(child):
@@ -123,8 +106,7 @@ def check_balanced_string(child):
 
 def crossover(selection):
 	#crossover point, using single point for crossover
-	random.seed()
-	k = random.randint(0,10)
+	k = random.randint(0,100)
 	wentover = []
 
 	paren1 = [ int(x) for x in selection[0][4] ]
@@ -139,7 +121,7 @@ def crossover(selection):
 
 	while is_balanced1 and is_balanced2:
 
-		k = random.randint(0,10)
+		k = random.randint(0,100)
 		try:
 			wentover.index(k)
 		except ValueError:
@@ -156,13 +138,12 @@ def crossover(selection):
 
 
 def mutation(child, rate):
-	random.seed()
 	temp = copy.deepcopy(child)
 
 	for i in range(len(temp)):
 		for bit in range(len(temp[i])):
 			#apply mutation if less than rate on each 
-			x = random.random()
+			x = random.uniform(0.0, 1.0)
 			if x < rate:
 				#print "mutate!"
 				if temp[i][bit] == 0:
@@ -179,41 +160,12 @@ def mutation(child, rate):
 		return child
 
 
-##########################################################################
-#holds the population in the format [sum_diff, sub1, sub2]
-generation = 1
-
-pop = []
-#create a list of [100]10 distinct positive integers
-distinct_list = rng()
-
-#create list of randomized strings population size = [50] 20
-string_list = generate_strings(20)
-
-print "in the begining: \n", string_list
-
-# going through string_list, to obtain more information
-for i in range(len(string_list)):
-	#call partition
-	sub1, sub2 = partition(string_list[i], distinct_list)
-	sum_diff = abs(sum([ int(a) for a in sub1]) - sum([ int(a) for a in sub2]))
-	pop.append([ sum_diff ,sub1, sub2, string_list[i] ])
-
-#sort the population by lowest sum difference
-pop = sorted(pop, key=itemgetter(0))
-print_table(pop)
-
-#assign fitness values
-#compare itself to how much better it is compared to other strings
-#fitness = how much people you're better based on your current position
-total_fitness, max_fitness, avg_fitness, pop_with_fitness = fitness(pop)
-
-while generation < 100:
-	print "GENERATION: ", generation
-	#roulette wheel
+def select_parent(population_with_fitness):
 	selection = []
-	while (len(selection) < 2):
-		select = roulette_wheel(pop_with_fitness)
+
+	while len(selection)< 2:
+		select = roulette_wheel(population_with_fitness)
+
 		if select:
 			if len(selection):
 				#make sure it's not the same as first selection
@@ -223,41 +175,151 @@ while generation < 100:
 			else:
 				selection.append(select)
 
+	return selection
 
-	print "CROSSOVER"
-	#crossover
-	childrens = crossover(selection)
+def printValue(population_with_fitness):
+	x = PrettyTable(["Sum Difference" ,"Fitness", "P(s)"])
+	for i in range(len(population_with_fitness)):#-1, -1, -1):
+		x.add_row([population_with_fitness[i][1], population_with_fitness[i][0], population_with_fitness[i][5] ])
+	"""
+	x = PrettyTable(["String", "Sum Difference" ,"Fitness", "P(s)"])
+	for i in range(len(population_with_fitness)):#-1, -1, -1):
+		x.add_row([population_with_fitness[i][4], population_with_fitness[i][1], population_with_fitness[i][0], population_with_fitness[i][5] ])
+	"""
+	print x
+	return
 
-	print "MUTATION"
-	#mutation
-	#defined mutation rate
-	mutation_rate = 0.1
-	childrens = mutation(childrens, mutation_rate)
+def print_stats(stats):
+	x = PrettyTable(["Statistics", "Generation Count", "Convergence", "Mutation", "Population"])
+	x.add_row(["MIN", stats[1], 0, stats[5], stats[6]])
+	x.add_row(["MAX", stats[0], 0, stats[5], stats[6]])
+	x.add_row(["AVG", stats[2], 0, stats[5], stats[6]])
+	x.add_row(["MED", stats[3], 0, stats[5], stats[6]])
+	x.add_row(["RANGE", stats[4], 0, stats[5], stats[6]])
+	print x
+	return
 
-	print "REPLACING YOUR PARENTS"
-	#replacing parents with offsprings
-	parent1 = selection[0][4]
-	parent2 = selection[1][4]
+#################################################################################################################	
+#################################################################################################################	
+#################################################################################################################	
+#################################################################################################################	
+#holds the population in the format [sum_diff, sub1, sub2]
+generation = 1
 
-	childrens[0] = ''.join(str(x) for x in childrens[0])
-	childrens[1] = ''.join(str(x) for x in childrens[1])
+population = []
+#create a list of [100] 10 distinct positive integers
+distinct_list = rng()
 
-	string_list[string_list.index(parent1)] = childrens[0]
-	string_list[string_list.index(parent2)] = childrens[1]
+#create list of randomized strings population size = [50] 20
+population_size = 20
 
-	#[223, [2046, 7115, 9338, 5161, 4584], [4223, 3469, 8492, 7607, 4230], '0100111100']
-	#compute fitness
-	pop = []
+size = population_size/2
+p = size
 
-	for i in range(len(string_list)):
-		#call partition
-		sub1, sub2 = partition(string_list[i], distinct_list)
-		sum_diff = abs(sum([ int(a) for a in sub1]) - sum([ int(a) for a in sub2]))
-		pop.append([ sum_diff ,sub1, sub2, string_list[i] ])
+statistics =[]
 
-	pop = sorted(pop, key=itemgetter(0))
 
-	total_fitness, max_fitness, avg_fitness, pop_with_fitness = fitness(pop)
+for i in range(size):
+	generation = 1
+	
+	#generate new population
+	population_strings = generate_strings(population_size)
+	population = []
 
-	generation+=1
 
+	while generation < 8000:
+		
+		print "GENERATION: ", generation
+		# going through population_strings, to obtain more information
+		for i in range(len(population_strings)):
+			#call partition
+			sub1, sub2 = partition(population_strings[i], distinct_list)
+			sum_diff = abs(sum([ int(a) for a in sub1]) - sum([ int(a) for a in sub2]))
+			population.append([ sum_diff ,sub1, sub2, population_strings[i] ])
+
+		#sort the population by lowest sum difference
+		population = sorted(population, key=itemgetter(0))
+
+		#assign fitness values
+		#compare itself to how much better it is compared to other strings
+		#fitness = how much people you're better based on your current position
+		total_fitness, max_fitness, avg_fitness, population_with_fitness = fitness(population)
+
+		#roulette wheel
+		selection = select_parent(population_with_fitness)
+
+		#crossover
+		childrens = crossover(selection)
+
+		#mutation
+		mutation_rate = 0.1
+		childrens = mutation(childrens, mutation_rate)
+
+		#print "REPLACING YOUR PARENTS"
+		#replacing parents with offsprings
+		parent1 = selection[0][4]
+		parent2 = selection[1][4]
+
+
+		childrens[0] = ''.join(str(x) for x in childrens[0])
+		childrens[1] = ''.join(str(x) for x in childrens[1])
+
+		population_strings[population_strings.index(parent1)] = childrens[0]
+		population_strings[population_strings.index(parent2)] = childrens[1]
+
+		#compute fitness
+		population = []
+
+		for i in range(len(population_strings)):
+			#call partition
+			sub1, sub2 = partition(population_strings[i], distinct_list)
+			sum_diff = abs(sum([ int(a) for a in sub1]) - sum([ int(a) for a in sub2]))
+			population.append([ sum_diff ,sub1, sub2, population_strings[i] ])
+		
+		population = sorted(population, key=itemgetter(0))
+
+
+		#if convergence to 0 add to statistics
+		if population[0][0] == 0:
+			stats = {}
+			stats['Best'] = population[0][0]
+			stats['Generation'] = generation
+			stats['Iteration'] = i
+			statistics.append(stats)
+			break
+		
+		generation+=1
+
+
+#get statistics
+#get maximum generation
+max_gen = max(statistics, key=lambda x:x['Generation'])['Generation']
+
+#get minimum generation
+min_gen = min(statistics, key=lambda x:x['Generation'])['Generation']
+
+#get average generation
+average_of_gen = 0.0
+for i in statistics:
+	average_of_gen += i['Generation']
+
+average_of_gen = average_of_gen/len(statistics)
+
+#get median
+if len(statistics)%2 :
+	median_gen = float(statistics[len(statistics)-1]['Generation'] + statistics[len(statistics)-2]['Generation'])/ 2
+else:
+	median_gen = statistics[len(statistics)/2]['Generation']
+
+#get the range of generation
+range_gen = max_gen - min_gen
+
+"""
+print "CONVERGENCE: ", min(statistics, key=lambda x:x['Best'])['Best']
+print "MAX GENERATION: ", max_gen
+print "MIN GENERATION: ", min_gen
+print "AVG GENERATION: ", average_of_gen
+print "MED GENERATION: ", median_gen
+print "RANGE OF GENERATION: ", range_gen
+"""
+print_stats([max_gen, min_gen, average_of_gen, median_gen, range_gen, mutation_rate, population_size])
