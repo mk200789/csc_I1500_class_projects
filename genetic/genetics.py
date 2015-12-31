@@ -2,10 +2,10 @@
 import collections
 import random
 from operator import itemgetter
-#Xn+1 = (a*Xn + c) mod m.
 from prettytable import PrettyTable
 import operator
 import copy
+import time
 
 class Genetics:
 	def __init__(self, population_size):
@@ -41,14 +41,11 @@ class Genetics:
 
 	def generate_strings(self):
 		# generates strings of equal # of 1's and 0's
-		#random.seed(0)
 		for i in range(self.population_size):
 			#generate a population of strings with equal 1's and 0s
-			#sample = [0 for x in rang50)] + [1 for x in range(50)]
 			sample = [0 for x in range(50)] + [1 for x in range(50)]
 			random.shuffle(sample)
 			self.population_strings.append(''.join(str(x) for x in sample))
-			#strings.append([])
 		return 
 
 
@@ -76,17 +73,9 @@ class Genetics:
 		return 
 
 
-	def check_dup(self, indiv, population):
-		#returns the amount of dups
-		dups = 0
-		for i in population:
-			if i[3] == indiv:
-				dups += 1
-
-		return dups
-
-
 	def fitness(self):
+		#compare itself to how much better it is compared to other strings
+		#fitness = how much people you're better based on your current position
 		total_fitness, max_fitness, avg_fitness = 0, 0, 0.0
 
 		for i in range(len(self.population)):
@@ -135,7 +124,6 @@ class Genetics:
 		paren1 = [ int(x) for x in parents[0][4] ]
 		paren2 = [ int(x) for x in parents[1][4] ]
 		
-		#print "point for crossover: ", k
 		child1 = paren1[:k] + paren2[k:]
 		child2 = paren2[:k] + paren1[k:]
 
@@ -249,34 +237,30 @@ class Genetics:
 
 			while generation < 10000:
 				
-				#print "GENERATION: ", generation, "\nIteration: ", i
 				self.population = []
 				# call partition
 				self.partition()
+
 				self.population_with_fitness = []
+				
 				#assign fitness values
-				#compare itself to how much better it is compared to other strings
-				#fitness = how much people you're better based on your current position
 				self.fitness()
 
-				#roulette wheel
+				#select parents
 				parents = self.select_parent()
 
-				#crossover
+				#perform crossover to obtain kids
 				childrens = self.crossover(parents)
 
 				#mutation
 				childrens = self.mutation(childrens)
 
-				#print "REPLACING YOUR PARENTS"
 				#replacing parents with offsprings
-
 				childrens[0] = ''.join(str(x) for x in childrens[0])
 				childrens[1] = ''.join(str(x) for x in childrens[1])
 
 				self.population_strings[self.population_strings.index(parents[0][4])] = childrens[0]
 				self.population_strings[self.population_strings.index(parents[1][4])] = childrens[1]
-
 
 				#if convergence to 0 add to statistics
 				print "GENERATION: ", generation, "\nIteration: ", i, self.population[0][0]
@@ -293,6 +277,9 @@ class Genetics:
 
 if __name__ == '__main__':
 	genes = Genetics(20)
+	start = time.time()
 	genes.genetic_algorithm()
 	stat = genes.get_statistics()
 	genes.print_statistics(stat)
+	end = time.time()
+	print "Total time: ", (end - start)/60.0, "minutes"
