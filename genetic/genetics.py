@@ -1,4 +1,3 @@
-#solution is the most smallest sum diff
 import collections
 import random
 from operator import itemgetter
@@ -162,8 +161,6 @@ class Genetics:
 
 		if self.check_balanced_string(temp[0]) == 0 and self.check_balanced_string(temp[1]) == 0:
 			#if balanced zeroes
-			#print "balanced mutation"
-			print "MUTATION!"
 			return temp
 		else:
 			#print "not balanced mutation: ", child
@@ -187,7 +184,6 @@ class Genetics:
 
 
 	def get_statistics(self):
-
 		#get maximum generation
 		max_gen = max(self.statistics, key=lambda x:x['Generation'])['Generation']
 
